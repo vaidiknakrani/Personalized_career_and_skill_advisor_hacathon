@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Career Advisor</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+      transition: background 0.2s ease;
+    }
+
+    .container {
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(12px); /* glassmorphism effect */
+  padding: 80px 80px;
+  border-radius: 20px;
+  text-align: center;
+  margin-top: 10px;
+  box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.6);
+  width: 550px;       /* increased from 400px */
+  max-width: 95%;     /* still responsive */
+}
+
+    .glitch {
+      position: relative;
+      color: #ff5ebd;
+      font-size: 22px;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-bottom: 15px;
+    }
+    .glitch::before,
+    .glitch::after {
+      content: attr(data-text);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      overflow: hidden;
+      clip: rect(0, 900px, 0, 0);
+    }
+    .glitch::before {
+      animation: glitchTop 2s infinite linear alternate-reverse;
+      color: #00fff7;
+    }
+    .glitch::after {
+      animation: glitchBottom 2s infinite linear alternate-reverse;
+      color: #ff0080;
+    }
+
+    @keyframes glitchTop {
+      0% { clip: rect(0, 900px, 0, 0); }
+      20% { clip: rect(0, 900px, 80px, 0); }
+      40% { clip: rect(0, 900px, 0, 0); }
+      60% { clip: rect(0, 900px, 50px, 0); }
+      100% { clip: rect(0, 900px, 0, 0); }
+    }
+    @keyframes glitchBottom {
+      0% { clip: rect(0, 900px, 0, 0); }
+      20% { clip: rect(10px, 900px, 100px, 0); }
+      40% { clip: rect(0, 900px, 0, 0); }
+      60% { clip: rect(20px, 900px, 80px, 0); }
+      100% { clip: rect(0, 900px, 0, 0); }
+    }
+
+    p {
+      color: #a4f59c;
+      font-size: 14px;
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      color: #fff;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+      font-size: 16px;
+      transition: all 0.3s ease-in-out;
+      text-align: center;
+    }
+
+    input:focus {
+      transform: scale(1.1);
+      background: #fff;
+      color: #000;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      background: linear-gradient(45deg, #ff0080, #ff8c00);
+      color: white;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      background: linear-gradient(45deg, #ff8c00, #ff0080);
+    }
+
+    #result-container {
+      margin-top: 20px;
+      color: #fff;
+      font-size: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1 class="glitch" data-text="Personalized Career & Skills Advisor">Personalized Career & Skills Advisor</h1>
+      <p>Enter your skills to get AI-generated career recommendations.</p>
+    </header>
+
+    <div class="input-container">
+      <label for="skills">Enter Your Skills:</label>
+      <input id="skills" type="text" placeholder="e.g., Java, Python, Data Analysis">
+    </div>
+
+    <button onclick="suggestCareerPath()">Get Career Suggestions</button>
+    <div id="result-container"></div>
+  </div>
+
+  <script>
+  // Track mouse position
+  let mouseX = 0, mouseY = 0;
+  let targetX = 0, targetY = 0;
+
+  document.body.addEventListener("mousemove", (e) => {
+    targetX = e.clientX / window.innerWidth;
+    targetY = e.clientY / window.innerHeight;
+  });
+
+  function animateGradient() {
+    // Smooth interpolation
+    mouseX += (targetX - mouseX) * 0.05;
+    mouseY += (targetY - mouseY) * 0.05;
+
+    // Generate multiple colors dynamically
+    const color1 = `rgb(${Math.floor(255 * mouseX)}, ${Math.floor(100 + 155 * mouseY)}, ${Math.floor(200 * mouseY)})`;
+    const color2 = `rgb(${Math.floor(255 * (1 - mouseX))}, ${Math.floor(200 * mouseY)}, ${Math.floor(255 * mouseX)})`;
+    const color3 = `rgb(${Math.floor(150 + 100 * mouseY)}, ${Math.floor(255 * mouseX)}, ${Math.floor(180 + 70 * (1 - mouseY))})`;
+    const color4 = `rgb(${Math.floor(200 * mouseY)}, ${Math.floor(150 + 100 * mouseX)}, ${Math.floor(255 * (1 - mouseX))})`;
+
+    // Multi-color gradient
+    document.body.style.background = `linear-gradient(135deg, ${color1}, ${color2}, ${color3}, ${color4})`;
+
+    requestAnimationFrame(animateGradient);
+  }
+
+  animateGradient();
+document.addEventListener("mousemove", (e) => {
+  const x = (e.clientX / window.innerWidth) * 100;
+  const y = (e.clientY / window.innerHeight) * 100;
+
+  document.body.style.background = `radial-gradient(circle at ${x}% ${y}%, 
+    #0d0d0d 0%,    /* Very Dark Gray */
+    #1a1a1a 4%,    /* Dark Charcoal */
+    #111111 8%,    /* Almost Black */
+    #1c1c1c 12%,   /* Carbon Black */
+    #0f0f0f 16%,   /* Matte Black */
+    #080808 20%,   /* Deep Black */
+    #1b1b1b 24%,   /* Jet Black */
+    #121212 28%,   /* Pitch Black */
+    #000000 32%,   /* Pure Black */
+    #191919 36%,   /* Graphite Black */
+
+    #1a0d0d 40%,   /* Dark Maroon */
+    #0d1a0d 44%,   /* Dark Forest Green */
+    #0d0d1a 48%,   /* Dark Navy */
+    #1a0d14 52%,   /* Wine Black */
+    #1a1a0d 56%,   /* Olive Black */
+    #0f0d1a 60%,   /* Indigo Black */
+    #0d1a1a 64%,   /* Teal Black */
+    #1a0d19 70%,   /* Crimson Black */
+    #0d1a12 80%,   /* Moss Black */
+    #050505 100%   /* Absolute Black */
+  )`;
+});
+async function suggestCareerPath() {
+      const skills = document.getElementById("skills").value.trim();
+      if (!skills) {
+        alert("Please enter some skills!");
+        return;
+      }
+
+      // Show loading state
+      const button = event.target;
+      const originalText = button.textContent;
+      button.textContent = "Processing...";
+      button.disabled = true;
+
+      const resultDiv = document.getElementById("result-container");
+      resultDiv.innerHTML = `<p style="color: #a4f59c;">🧠 Analyzing your skills and generating mind map...</p>`;
+
+      try {
+        const res = await fetch("/suggest", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ skills })
+        });
+
+        const data = await res.json();
+
+        if (data.error) {
+          resultDiv.innerHTML = `<p style="color:red">❌ ${data.error}</p>`;
+        } else if (data.success && data.redirect_url) {
+          resultDiv.innerHTML = `<p style="color: #a4f59c;">✅ ${data.message}<br>🚀 Redirecting to your mind map...</p>`;
+          
+          // Redirect to mind map page after a short delay
+          setTimeout(() => {
+            window.location.href = data.redirect_url;
+          }, 1500);
+          return;
+        } else {
+          resultDiv.innerHTML = `<p style="color: #ff5ebd;">${data.message || 'No skills detected. Please try rephrasing your input.'}</p>`;
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        resultDiv.innerHTML = `<p style="color:red">❌ An error occurred. Please try again.</p>`;
+      } finally {
+        // Restore button state
+        button.textContent = originalText;
+        button.disabled = false;
+      }
+    }
+
+
+</script>
+
+</body>
+</html>

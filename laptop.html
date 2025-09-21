@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D Laptop Over Video</title>
+  <style>
+    /* Background video */
+    #myVideo {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1; /* keep behind everything */
+    }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #000;
+      overflow: hidden;
+    }
+
+    .scene {
+      perspective: 3000px;
+      z-index: 1; /* laptop above video */
+    }
+
+    .laptop {
+      width: 900px;   /* smaller laptop */
+      height: 600px;
+      transform-style: preserve-3d;
+      animation: float 6s infinite alternate ease-in-out;
+    }
+
+    /* Laptop screen */
+    .screen {
+      width: 100%;
+      height: 65%;
+      background: #000; /* black screen */
+      border: 14px solid #fff;  /* thinner bezel */
+      border-radius: 10px;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: rotateX(0deg) translateZ(40px);
+      box-shadow: 0 15px 25px rgba(0,0,0,0.9);
+      color: #37f012;
+      font-weight: bold;
+      font-family: "Courier New", monospace;
+      font-size: 28px;
+      text-align: center;
+      padding: 20px;
+    }
+
+    /* Keyboard */
+    .keyboard {
+      width: 100%;
+      height: 35%;
+      background: black;
+      border: 12px solid #fff;
+      border-radius: 6px;
+      transform: rotateX(75deg) translateY(-15px) translateZ(-40px);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-content: flex-start;
+      padding: 10px;
+      margin-top: -5px; /* tightly connected */
+    }
+
+    /* Keys */
+    .key {
+      width: 35px;
+      height: 35px;
+      margin: 3px;
+      background: #333;
+      border-radius: 4px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.8);
+    }
+
+    .login-btn {
+      margin-top: 25px;
+      padding: 15px 40px;
+      font-size: 24px;
+      font-family: Arial, sans-serif;
+      border-radius: 30px;
+      margin-left: 380px;
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(135deg, #0f0, #00ffaa);
+      color: #000;
+      font-weight: bold;
+      box-shadow: 0 8px 15px rgba(0,255,0,0.5);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      align-items: center;
+      display: flex;
+      justify-content: center;
+    }
+
+    .login-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 12px 25px rgba(0,255,0,0.7);
+    }
+
+    /* Floating animation */
+    @keyframes float {
+      0%   { transform: rotateY(-10deg) rotateX(3deg) translateY(0); }
+      50%  { transform: rotateY(10deg) rotateX(-3deg) translateY(-30px); }
+      100% { transform: rotateY(-10deg) rotateX(3deg) translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Background video -->
+  <video autoplay muted loop id="myVideo">
+    <source src="watermarked_preview.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+
+  <!-- 3D Laptop -->
+  <div class="scene">
+    <div class="laptop">
+      <div class="screen">
+        Welcome to AI Personalized Career Advisor
+      </div>
+      <div class="keyboard">
+        <!-- Example keys -->
+        <div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div>
+        <div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div>
+        <div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div>
+        <div class="key"></div><div class="key"></div><div class="key"></div>
+      </div>
+      <button class="login-btn" onclick="window.location.href='1.html'">Let's Begin</button>
+    </div>
+  </div>
+</body>
+</html>

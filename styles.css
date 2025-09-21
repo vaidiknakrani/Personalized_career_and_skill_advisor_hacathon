@@ -1,0 +1,162 @@
+/* Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: linear-gradient(45deg, #ff0099, #00bfff, #ff5733, #ffcc00);
+  background-size: 400% 400%;
+  animation: gradientMove 10s ease infinite;
+  color: white;
+  font-family: 'Arial', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+  transition: background 0.5s ease;
+}
+
+.container {
+  background-color: rgba(18, 18, 18, 0.8);
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  width: 100%;
+  max-width: 600px;
+  text-align: center;
+  position: relative;
+}
+
+header h1 {
+  font-size: 2.5rem;
+  color: #ff0099;  /* Neon Pink */
+  position: relative;
+  display: inline-block;
+}
+
+header h1.glitch::before,
+header h1.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: #00ffcc;
+  z-index: -1;
+  animation: glitch 1s infinite;
+}
+
+header h1.glitch::after {
+  color: #ffcc00;
+  animation: glitch 1s 0.5s infinite;
+}
+
+header p {
+  font-size: 1.1rem;
+  color: #66ff66;  /* Neon Green */
+  margin-bottom: 20px;
+}
+
+.input-container {
+  margin-bottom: 20px;
+}
+
+label {
+  font-size: 1.2rem;
+  color: #00bfff; /* Deep Sky Blue */
+}
+
+input {
+  width: 80%;
+  padding: 10px;
+  font-size: 1.1rem;
+  margin-top: 10px;
+  border: 2px solid #ff00cc;  /* Bright Pink */
+  background-color: #2a2a2a;
+  color: white;
+  border-radius: 8px;
+  transition: 0.3s ease;
+  resize: none; /* Prevents resizing */
+  overflow: hidden; /* Ensures the input box doesn't expand vertically */
+}
+
+input:focus {
+  border-color: #ff5733;
+  outline: none;
+  box-shadow: 0 0 8px 2px rgba(255, 87, 51, 0.8);
+}
+
+input::placeholder {
+  color: #ccc;
+}
+
+button {
+  padding: 15px 30px;
+  font-size: 1.2rem;
+  background-color: #ff5733; /* Bright Orange */
+  color: white;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 20px;
+}
+
+button:hover {
+  background-color: #ff8000; /* Light Orange */
+}
+
+#result-container {
+  margin-top: 30px;
+  padding: 20px;
+  background-color: #222;
+  border-radius: 8px;
+  display: none;
+}
+
+#result-container h3 {
+  font-size: 1.5rem;
+  color: #ffcc00; /* Yellow */
+}
+
+#result-container p {
+  font-size: 1.2rem;
+  color: #00ffcc; /* Aqua */
+}
+
+@keyframes gradientMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes glitch {
+  0% {
+    text-shadow: 2px 0px 5px #ff00cc, -2px 0px 5px #ff5733;
+    transform: skew(-0.5deg);
+  }
+  25% {
+    text-shadow: -2px 0px 5px #00bfff, 2px 0px 5px #ff5733;
+    transform: skew(0.5deg);
+  }
+  50% {
+    text-shadow: 2px 0px 5px #ff5733, -2px 0px 5px #00bfff;
+    transform: skew(-0.5deg);
+  }
+  75% {
+    text-shadow: -2px 0px 5px #ff0099, 2px 0px 5px #ff5733;
+    transform: skew(0.5deg);
+  }
+  100% {
+    text-shadow: 2px 0px 5px #ff00cc, -2px 0px 5px #ff5733;
+    transform: skew(-0.5deg);
+  }
+}

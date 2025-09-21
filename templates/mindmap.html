@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Skills Mind Map</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .header {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            color: #ff5ebd;
+            text-shadow: 0 0 20px rgba(255, 94, 189, 0.5);
+        }
+
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+            color: #a4f59c;
+        }
+
+        .container {
+            display: flex;
+            height: calc(100vh - 120px);
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .sidebar {
+            width: 300px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(12px);
+            border-radius: 15px;
+            padding: 20px;
+            color: white;
+            overflow-y: auto;
+        }
+
+        .mindmap-container {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border-radius: 15px;
+            position: relative;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 15px;
+            background: linear-gradient(45deg, #ff0080, #ff8c00);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            background: linear-gradient(45deg, #ff8c00, #ff0080);
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+        }
+
+        #mindmap-svg {
+            width: 100%;
+            height: 100%;
+            border-radius: 15px;
+        }
+
+        .node circle {
+            stroke: #333;
+            stroke-width: 2px;
+            cursor: pointer;
+        }
+
+        .node.center circle {
+            fill: #fd7e14;
+            r: 25;
+        }
+
+        .node.category circle {
+            r: 20;
+        }
+
+        .node.skill circle {
+            r: 12;
+        }
+
+        .node.programming circle { fill: #007bff; }
+        .node.data_science circle { fill: #28a745; }
+        .node.design circle { fill: #dc3545; }
+        .node.business circle { fill: #ffc107; }
+        .node.languages circle { fill: #6f42c1; }
+        .node.other circle { fill: #6c757d; }
+
+        .node text {
+            font-size: 12px;
+            text-anchor: middle;
+            dominant-baseline: central;
+            fill: white;
+            font-weight: bold;
+            pointer-events: none;
+        }
+
+        .node.center text {
+            font-size: 14px;
+        }
+
+        .link {
+            stroke: #999;
+            stroke-opacity: 0.6;
+            stroke-width: 2px;
+        }
+
+        .link.strong { stroke-width: 4px; stroke: #333; }
+        .link.medium { stroke-width: 3px; stroke: #666; }
+        .link.weak { stroke-width: 1px; stroke: #ccc; }
+
+        .skill-list {
+            margin-top: 20px;
+        }
+
+        .skill-category {
+            margin-bottom: 15px;
+        }
+
+        .category-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #ff5ebd;
+            margin-bottom: 8px;
+            text-transform: capitalize;
+        }
+
+        .skill-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 10px;
+            margin: 3px 0;
+            border-radius: 15px;
+            font-size: 0.9em;
+        }
+
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #333;
+            font-size: 1.2em;
+        }
+
+        .stats {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stats h3 {
+            margin: 0 0 10px 0;
+            color: #ff5ebd;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                height: auto;
+            }
+            
+            .sidebar {
+                width: 100%;
+                order: 2;
+            }
+            
+            .mindmap-container {
+                height: 400px;
+                order: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🧠 Your Skills Mind Map</h1>
+        <p id="skills-description">Visualizing your professional skills and their relationships</p>
+    </div>
+
+    <div class="container">
+        <div class="sidebar">
+            <div class="stats" id="stats">
+                <h3>📊 Statistics</h3>
+                <div class="stat-item">
+                    <span>Total Skills:</span>
+                    <span id="total-skills">-</span>
+                </div>
+                <div class="stat-item">
+                    <span>Categories:</span>
+                    <span id="total-categories">-</span>
+                </div>
+                <div class="stat-item">
+                    <span>Connections:</span>
+                    <span id="total-connections">-</span>
+                </div>
+            </div>
+
+            <div class="skill-list" id="skill-list">
+                <h3>🔧 Your Skills</h3>
+            </div>
+        </div>
+
+        <div class="mindmap-container">
+            <button class="btn back-btn" onclick="goBack()">← Back</button>
+            <div class="controls">
+                <button class="btn" onclick="resetZoom()">Reset View</button>
+                <button class="btn" onclick="downloadSVG()">Download</button>
+            </div>
+            <div class="loading" id="loading">Loading your mind map...</div>
+            <svg id="mindmap-svg"></svg>
+        </div>
+    </div>
+
+    <script>
+        let simulation, svg, mindmapData;
+
+        // Initialize the mindmap on page load
+        window.addEventListener('load', function() {
+            loadMindMapData();
+        });
+
+        async function loadMindMapData() {
+            try {
+                const response = await fetch('/api/mindmap-data');
+                const data = await response.json();
+                
+                if (data.error) {
+                    document.getElementById('loading').innerHTML = '❌ ' + data.error + '<br><a href="/" style="color: #ff5ebd;">Go back</a>';
+                    return;
+                }
+                
+                mindmapData = data.mindmap;
+                updateSidebar(data);
+                renderMindMap(mindmapData);
+                
+            } catch (error) {
+                console.error('Error loading mindmap data:', error);
+                document.getElementById('loading').innerHTML = '❌ Error loading mind map<br><a href="/" style="color: #ff5ebd;">Go back</a>';
+            }
+        }
+
+        function updateSidebar(data) {
+            // Update description
+            document.getElementById('skills-description').textContent = `Skills extracted from: "${data.skills_input}"`;
+            
+            // Update statistics
+            const metadata = mindmapData.metadata;
+            document.getElementById('total-skills').textContent = metadata.total_skills;
+            document.getElementById('total-categories').textContent = metadata.categories_count;
+            document.getElementById('total-connections').textContent = metadata.connections;
+            
+            // Update skill list
+            const skillListContainer = document.getElementById('skill-list');
+            skillListContainer.innerHTML = '<h3>🔧 Your Skills</h3>';
+            
+            for (const [category, skills] of Object.entries(mindmapData.categories)) {
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'skill-category';
+                
+                const titleDiv = document.createElement('div');
+                titleDiv.className = 'category-title';
+                titleDiv.textContent = category.replace('_', ' ').toUpperCase();
+                categoryDiv.appendChild(titleDiv);
+                
+                skills.forEach(skill => {
+                    const skillDiv = document.createElement('div');
+                    skillDiv.className = 'skill-item';
+                    skillDiv.textContent = skill;
+                    categoryDiv.appendChild(skillDiv);
+                });
+                
+                skillListContainer.appendChild(categoryDiv);
+            }
+        }
+
+        function renderMindMap(data) {
+            const container = document.querySelector('.mindmap-container');
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+            
+            svg = d3.select("#mindmap-svg")
+                .attr("width", width)
+                .attr("height", height);
+            
+            // Clear loading message
+            document.getElementById('loading').style.display = 'none';
+            
+            // Create zoom behavior
+            const zoom = d3.zoom()
+                .scaleExtent([0.1, 4])
+                .on('zoom', function(event) {
+                    container.select('g').attr('transform', event.transform);
+                });
+            
+            svg.call(zoom);
+            
+            const container_g = svg.append('g');
+            
+            // Create force simulation
+            simulation = d3.forceSimulation(data.nodes)
+                .force('link', d3.forceLink(data.links).id(d => d.id).distance(100))
+                .force('charge', d3.forceManyBody().strength(-300))
+                .force('center', d3.forceCenter(width / 2, height / 2))
+                .force('collision', d3.forceCollide().radius(30));
+            
+            // Create links
+            const links = container_g.selectAll('.link')
+                .data(data.links)
+                .enter().append('line')
+                .attr('class', d => `link ${d.strength}`)
+                .style('stroke', '#999')
+                .style('stroke-opacity', 0.6);
+            
+            // Create nodes
+            const nodes = container_g.selectAll('.node')
+                .data(data.nodes)
+                .enter().append('g')
+                .attr('class', d => `node ${d.category}`)
+                .call(d3.drag()
+                    .on('start', dragstarted)
+                    .on('drag', dragged)
+                    .on('end', dragended));
+            
+            // Add circles to nodes
+            nodes.append('circle')
+                .attr('r', d => {
+                    if (d.type === 'center') return 25;
+                    if (d.type === 'category') return 20;
+                    return 12;
+                });
+            
+            // Add text labels to nodes
+            nodes.append('text')
+                .text(d => d.label)
+                .style('font-size', d => d.type === 'center' ? '14px' : '12px')
+                .style('text-anchor', 'middle')
+                .style('dominant-baseline', 'central')
+                .style('fill', 'white')
+                .style('font-weight', 'bold')
+                .style('pointer-events', 'none');
+            
+            // Add hover effects
+            nodes.on('mouseover', function(event, d) {
+                d3.select(this).select('circle')
+                    .transition()
+                    .duration(200)
+                    .attr('r', d => {
+                        const baseR = d.type === 'center' ? 25 : d.type === 'category' ? 20 : 12;
+                        return baseR * 1.2;
+                    });
+            })
+            .on('mouseout', function(event, d) {
+                d3.select(this).select('circle')
+                    .transition()
+                    .duration(200)
+                    .attr('r', d => {
+                        if (d.type === 'center') return 25;
+                        if (d.type === 'category') return 20;
+                        return 12;
+                    });
+            });
+            
+            // Update positions on simulation tick
+            simulation.on('tick', () => {
+                links
+                    .attr('x1', d => d.source.x)
+                    .attr('y1', d => d.source.y)
+                    .attr('x2', d => d.target.x)
+                    .attr('y2', d => d.target.y);
+                
+                nodes
+                    .attr('transform', d => `translate(${d.x},${d.y})`);
+            });
+            
+            // Store zoom for reset function
+            window.zoomBehavior = zoom;
+        }
+
+        function dragstarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+
+        function dragended(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
+
+        function resetZoom() {
+            if (window.zoomBehavior) {
+                svg.transition().duration(750).call(
+                    window.zoomBehavior.transform,
+                    d3.zoomIdentity
+                );
+            }
+        }
+
+        function downloadSVG() {
+            const svgElement = document.getElementById('mindmap-svg');
+            const svgData = new XMLSerializer().serializeToString(svgElement);
+            const blob = new Blob([svgData], {type: 'image/svg+xml'});
+            const url = URL.createObjectURL(blob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'skills-mindmap.svg';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        function goBack() {
+            window.location.href = '/';
+        }
+
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            if (mindmapData) {
+                // Re-render on resize
+                svg.selectAll("*").remove();
+                renderMindMap(mindmapData);
+            }
+        });
+    </script>
+</body>
+</html>

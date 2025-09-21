@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareerPath AI - Create Your Account</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            padding: 20px 0;
+        }
+
+        .register-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            animation: slideIn 0.8s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            color: #4a5568;
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .logo .ai-text {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo p {
+            color: #718096;
+            font-size: 0.95rem;
+            font-weight: 400;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+            flex: 1;
+        }
+
+        .form-group.full-width {
+            flex: none;
+        }
+
+        .form-group label {
+            display: block;
+            color: #4a5568;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 8px rgba(102, 126, 234, 0.4);
+    background: white; /* stays white when clicked */
+    transform: none;   /* stop enlarging */
+}
+
+        .form-group select {
+            cursor: pointer;
+        }
+
+        .register-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .register-btn:active {
+            transform: translateY(1px);
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 25px 0;
+            position: relative;
+            color: #a0aec0;
+            font-size: 0.9rem;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #e2e8f0;
+            z-index: -1;
+        }
+
+        .divider span {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 0 15px;
+        }
+
+        .signin-link {
+            text-align: center;
+            color: #718096;
+            font-size: 0.9rem;
+        }
+
+        .signin-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .signin-link a:hover {
+            color: #764ba2;
+        }
+
+        .features {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .back-button {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 10px 15px;
+  font-size: 16px;
+  font-weight: bold;
+  text-decoration: none;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+.back-button:hover {
+  background-color: rgba(0, 0, 0, 0.9);
+  transform: scale(1.05);
+}
+        .feature-item {
+            display: inline-block;
+            margin: 0 10px;
+            color: #718096;
+            font-size: 0.8rem;
+            padding: 5px 0;
+        }
+
+        .feature-item::before {
+            content: '✓';
+            color: #48bb78;
+            margin-right: 5px;
+            font-weight: bold;
+        }
+
+        @media (max-width: 580px) {
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .register-container {
+                margin: 20px;
+                padding: 30px 25px;
+            }
+            
+            .logo h1 {
+                font-size: 1.8rem;
+            }
+        }
+
+        .terms-checkbox {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+
+        .terms-checkbox input {
+            width: auto;
+            margin: 0;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+        .register-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 16px;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      margin-top: 20px;
+    }
+
+    .register-btn:hover {
+      transform: scale(1.05);
+      background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+      box-shadow: 0 8px 20px rgba(118, 75, 162, 0.4);
+    }
+
+    .register-btn:active {
+      transform: scale(0.98);
+    }
+
+    #result-container {
+      margin-top: 20px;
+      color: #fff;
+      font-size: 15px;
+    }
+        
+    .button:hover {
+      transform: scale(1.05);
+      background: linear-gradient(45deg, #ff8c00, #ff0080);
+    }
+
+        .terms-checkbox label {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #718096;
+            cursor: pointer;
+            line-height: 1.4;
+        }
+
+        .terms-checkbox a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .terms-checkbox a:hover {
+            text-decoration: underline;
+        }
+
+        .password-requirements {
+            font-size: 0.8rem;
+            color: #718096;
+            margin-top: 5px;
+            line-height: 1.3;
+        }
+    </style>
+</head>
+<body>
+    <a href="1.html" class="back-button">← Back</a>
+    <div class="register-container">
+        <div class="logo">
+            <h1>Career<span class="ai-text">Path AI</span></h1>
+            <p>Start Your Journey to Success</p>
+        </div>
+
+        <form id="registerForm">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="firstName">First Name</label>
+                    <input type="text" id="firstName" name="firstName" placeholder="Enter first name" required>
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Last Name</label>
+                    <input type="text" id="lastName" name="lastName" placeholder="Enter last name" required>
+                </div>
+            </div>
+
+            <div class="form-group full-width">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Create password" required>
+                    <div class="password-requirements">
+                        Min 8 characters, include letters & numbers
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm password" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="studentLevel">Student Level</label>
+                    <select id="studentLevel" name="studentLevel" required>
+                        <option value="">Select level</option>
+                        <option value="high-school">High School</option>
+                        <option value="undergraduate">Undergraduate</option>
+                        <option value="graduate">Graduate</option>
+                        <option value="professional">Working Professional</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="fieldOfInterest">Field of Interest</label>
+                    <select id="fieldOfInterest" name="fieldOfInterest" required>
+                        <option value="">Select field</option>
+                        
+                        <option value="business">AI</option>
+                        <option value="healthcare">CSE</option>
+                        <option value="engineering">DS</option>
+                        <option value="arts">ML</option>
+                        <option value="science">IT</option>
+                        <option value="education">CC</option>
+                        <option value="other">BDA</option>
+                        <option value="technology">other</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="terms-checkbox">
+                <input type="checkbox" id="terms" name="terms" required>
+                <label for="terms">
+                    I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>. 
+                    I consent to receive career guidance and job market insights.
+                </label>
+            </div>
+
+            <button type="submit" class="register-btn" class="button:hover">Create Your Career Profile</button>
+        </form>
+
+        <div class="divider">
+            <span>Already have an account?</span>
+        </div>
+
+        <div class="signin-link">
+            <a href="#">Sign in to your account</a>
+        </div>
+
+        <div class="features">
+            <div class="feature-item">AI-Powered Matching</div>
+            <div class="feature-item">Personalized Roadmaps</div>
+            <div class="feature-item">Industry Insights</div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                firstName: document.getElementById('firstName').value,
+                lastName: document.getElementById('lastName').value,
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value,
+                confirmPassword: document.getElementById('confirmPassword').value,
+                studentLevel: document.getElementById('studentLevel').value,
+                fieldOfInterest: document.getElementById('fieldOfInterest').value,
+                terms: document.getElementById('terms').checked
+            };
+            
+            // Basic validation
+            if (formData.password !== formData.confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+            
+            if (formData.password.length < 8) {
+                alert('Password must be at least 8 characters long!');
+                return;
+            }
+            
+            if (!formData.terms) {
+                alert('Please accept the Terms of Service and Privacy Policy!');
+                return;
+            }
+            
+            // Check if all fields are filled
+            const requiredFields = ['firstName', 'lastName', 'email', 'password', 'studentLevel', 'fieldOfInterest'];
+            for (let field of requiredFields) {
+                if (!formData[field]) {
+                    alert('Please fill in all required fields!');
+                    return;
+                }
+            }
+            
+            // Simulate registration process
+            const button = document.querySelector('.register-btn');
+            button.textContent = 'Creating Your Profile...';
+            button.style.background = 'linear-gradient(135deg, #48bb78 0%, #38a169 100%)';
+            
+            setTimeout(() => {
+                alert('Welcome to CareerPath AI! Your account has been created successfully.');
+                button.textContent = 'Create Your Career Profile';
+                button.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                button.onclick = () => window.location.href = '1.html';
+            }, 2000);
+        });
+
+        // Add hover effects to form inputs
+       // Improve input focus effect (no scaling, no black background)
+document.querySelectorAll('input, select').forEach(input => {
+    input.addEventListener('focus', function() {
+        this.style.borderColor = "#667eea";  // bluish border
+        this.style.boxShadow = "0 0 8px rgba(102, 126, 234, 0.6)";
+        this.style.background = "white";     // keep background white
+    });
+    
+    input.addEventListener('blur', function() {
+        this.style.borderColor = "#e2e8f0"; 
+        this.style.boxShadow = "none";
+        this.style.background = "rgba(255, 255, 255, 0.9)"; // restore subtle background
+    });
+});
+
+
+        // Real-time password validation
+        document.getElementById('password').addEventListener('input', function() {
+            const password = this.value;
+            const requirements = document.querySelector('.password-requirements');
+            
+            if (password.length >= 8 && /(?=.*[a-zA-Z])(?=.*[0-9])/.test(password)) {
+                requirements.style.color = '#48bb78';
+                requirements.textContent = '✓ Password meets requirements';
+            } else {
+                requirements.style.color = '#718096';
+                requirements.textContent = 'Min 8 characters, include letters & numbers';
+            }
+        });
+        // Track mouse position
+  let mouseX = 0, mouseY = 0;
+  let targetX = 0, targetY = 0;
+
+  document.body.addEventListener("mousemove", (e) => {
+    targetX = e.clientX / window.innerWidth;
+    targetY = e.clientY / window.innerHeight;
+  });
+
+  function animateGradient() {
+    // Smooth interpolation
+    mouseX += (targetX - mouseX) * 0.05;
+    mouseY += (targetY - mouseY) * 0.05;
+
+    // Generate multiple colors dynamically
+    const color1 = `rgb(${Math.floor(255 * mouseX)}, ${Math.floor(100 + 155 * mouseY)}, ${Math.floor(200 * mouseY)})`;
+    const color2 = `rgb(${Math.floor(255 * (1 - mouseX))}, ${Math.floor(200 * mouseY)}, ${Math.floor(255 * mouseX)})`;
+    const color3 = `rgb(${Math.floor(150 + 100 * mouseY)}, ${Math.floor(255 * mouseX)}, ${Math.floor(180 + 70 * (1 - mouseY))})`;
+    const color4 = `rgb(${Math.floor(200 * mouseY)}, ${Math.floor(150 + 100 * mouseX)}, ${Math.floor(255 * (1 - mouseX))})`;
+
+    // Multi-color gradient
+    document.body.style.background = `linear-gradient(135deg, ${color1}, ${color2}, ${color3}, ${color4})`;
+
+    requestAnimationFrame(animateGradient);
+  }
+
+  animateGradient();
+document.addEventListener("mousemove", (e) => {
+  const x = (e.clientX / window.innerWidth) * 100;
+  const y = (e.clientY / window.innerHeight) * 100;
+
+  document.body.style.background = `radial-gradient(circle at ${x}% ${y}%, 
+    #0d0d0d 0%,    /* Very Dark Gray */
+    #1a1a1a 4%,    /* Dark Charcoal */
+    #111111 8%,    /* Almost Black */
+    #1c1c1c 12%,   /* Carbon Black */
+    #0f0f0f 16%,   /* Matte Black */
+    #080808 20%,   /* Deep Black */
+    #1b1b1b 24%,   /* Jet Black */
+    #121212 28%,   /* Pitch Black */
+    #000000 32%,   /* Pure Black */
+    #191919 36%,   /* Graphite Black */
+
+    #1a0d0d 40%,   /* Dark Maroon */
+    #0d1a0d 44%,   /* Dark Forest Green */
+    #0d0d1a 48%,   /* Dark Navy */
+    #1a0d14 52%,   /* Wine Black */
+    #1a1a0d 56%,   /* Olive Black */
+    #0f0d1a 60%,   /* Indigo Black */
+    #0d1a1a 64%,   /* Teal Black */
+    #1a0d19 70%,   /* Crimson Black */
+    #0d1a12 80%,   /* Moss Black */
+    #050505 100%   /* Absolute Black */
+  )`;
+});
+
+
+        // Real-time password confirmation
+        document.getElementById('confirmPassword').addEventListener('input', function() {
+            const password = document.getElementById('password').value;
+            const confirmPassword = this.value;
+            
+            if (confirmPassword && password !== confirmPassword) {
+                this.style.borderColor = '#e53e3e';
+            } else {
+                this.style.borderColor = '#e2e8f0';
+            }
+        });
+
+    // backened integration can be added here
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const formData = {
+        firstName: document.getElementById('firstName').value,
+        lastName: document.getElementById('lastName').value,
+        email: document.getElementById('email').value,
+        password: document.getElementById('password').value,
+        confirmPassword: document.getElementById('confirmPassword').value,
+        studentLevel: document.getElementById('studentLevel').value,
+        fieldOfInterest: document.getElementById('fieldOfInterest').value,
+        terms: document.getElementById('terms').checked
+    };
+
+    if (formData.password !== formData.confirmPassword) { alert('Passwords do not match'); return; }
+    if (!formData.terms) { alert('Accept Terms'); return; }
+
+    try {
+        const res = await fetch('/api/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formData)
+        });
+        const data = await res.json();
+        if (res.ok) alert('Registration successful! You can now login.');
+        else alert(data.message);
+    } catch (err) {
+        console.error(err);
+        alert('Server error');
+    }
+});
+    </script>
+</body>
+</html>

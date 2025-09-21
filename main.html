@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Career & Skills Advisor</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Autocomplete Dropdown */
+    #suggestions {
+      position: absolute;
+      background: #1f2937; /* gray-800 */
+      border: 1px solid #374151; /* gray-700 */
+      border-radius: 0.5rem;
+      margin-top: 0.25rem;
+      width: 100%;
+      max-height: 200px;
+      overflow-y: auto;
+      z-index: 50;
+    }
+    #suggestions div {
+      padding: 0.5rem;
+      cursor: pointer;
+    }
+    #suggestions div:hover {
+      background: #4f46e5; /* indigo-600 */
+      color: white;
+    }
+    /* Chatbox */
+    .chatbox {
+      max-height: 300px;
+      overflow-y: auto;
+      background: #111827; /* gray-900 */
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .back-button {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 10px 15px;
+  font-size: 16px;
+  font-weight: bold;
+  text-decoration: none;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+.back-button:hover {
+  background-color: rgba(0, 0, 0, 0.9);
+  transform: scale(1.05);
+}
+    .message {
+      margin-bottom: 0.75rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.5rem;
+      max-width: 80%;
+    }
+    .user {
+      background: #2563eb; /* blue-600 */
+      color: white;
+      text-align: right;
+      margin-left: auto;
+    }
+    .bot {
+      background: #374151; /* gray-700 */
+      color: white;
+      text-align: left;
+      margin-right: auto;
+    }
+  </style>
+</head>
+<body class="bg-gray-950 text-gray-100 font-sans">
+    <a href="1.html" class="back-button">← Back</a>
+  <!-- Hero Section -->
+  <header class="text-center py-10 bg-gradient-to-r from-purple-800 via-indigo-700 to-blue-700 shadow-lg">
+    <h1 class="text-4xl font-bold">🚀 AI-Powered Career & Skills Advisor</h1>
+    <p class="text-lg mt-2">Get personalized career guidance based on your skills</p>
+  </header>
+
+  <!-- Skill Input Section -->
+  <section class="max-w-3xl mx-auto my-8 p-6 bg-gray-900 rounded-2xl shadow-xl relative">
+    <h2 class="text-2xl font-semibold mb-4">Enter Your Skills</h2>
+    <input id="skillInput" type="text" placeholder="Type a skill like AI, Blockchain, Cybersecurity..."
+      class="w-full p-3 rounded-lg border border-gray-600 bg-gray-800 focus:ring-2 focus:ring-indigo-500 outline-none" 
+      oninput="showSuggestions()" autocomplete="off"/>
+    <div id="suggestions" class="hidden"></div>
+    <button onclick="provideGuidance()" 
+      class="mt-4 px-6 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-lg font-semibold">
+      Provide Guidance
+    </button>
+  </section>
+
+  <!-- Career Path Suggestions -->
+  <section id="careerSection" class="max-w-5xl mx-auto my-8 p-6 bg-gray-900 rounded-2xl shadow-lg hidden">
+    <h2 class="text-2xl font-semibold mb-4">Career Path Suggestions</h2>
+    <ul id="careerPaths" class="list-disc list-inside space-y-2 text-gray-300"></ul>
+  </section>
+
+  <!-- Learning Roadmap -->
+  <section id="roadmapSection" class="max-w-5xl mx-auto my-8 p-6 bg-gray-900 rounded-2xl shadow-lg hidden">
+    <h2 class="text-2xl font-semibold mb-4">Learning Roadmap</h2>
+    <ol id="learningRoadmap" class="list-decimal list-inside space-y-2 text-gray-300"></ol>
+  </section>
+
+  <!-- AI Advisor Chat -->
+  <section id="chatSection" class="max-w-3xl mx-auto my-8 p-6 bg-gray-900 rounded-2xl shadow-lg hidden">
+    <h2 class="text-2xl font-semibold mb-4">💬 Ask AI Advisor</h2>
+    <div id="chatbox" class="chatbox"></div>
+    <div class="flex gap-2">
+      <input id="chatInput" type="text" placeholder="Ask: Should I learn backend or full-stack?"
+        class="flex-1 p-3 rounded-lg border border-gray-600 bg-gray-800 focus:ring-2 focus:ring-indigo-500 outline-none"/>
+      <button onclick="sendMessage()" class="px-6 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-lg font-semibold">
+        Send
+      </button>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="text-center py-6 bg-gray-900 text-gray-500">
+    <p>⚡ Powered by AI Career Advisor | Verify advice before decisions</p>
+  </footer>
+
+  <script>
+   const skillData = {
+  "ai": { career: ["AI Engineer", "Research Scientist"], roadmap: ["Math & Linear Algebra", "Neural Networks", "Deep Learning Frameworks", "Deploy AI Models"] },
+  "blockchain": { career: ["Blockchain Developer", "Web3 Engineer"], roadmap: ["Cryptography Basics", "Smart Contracts (Solidity)", "Ethereum", "Build DApps"] },
+  "cloud": { career: ["Cloud Engineer", "DevOps Engineer"], roadmap: ["AWS/GCP Basics", "Docker & Kubernetes", "CI/CD", "Monitoring & Security"] },
+  "data_science": { career: ["Data Scientist", "ML Engineer"], roadmap: ["Python/R Basics", "Statistics & Probability", "ML Models", "Data Visualization"] },
+  "ethical_hacking": { career: ["Ethical Hacker", "Security Analyst"], roadmap: ["Networking", "Penetration Testing", "Linux Security", "Incident Response"] },
+  "flutter": { career: ["Mobile App Developer", "UI/UX Developer"], roadmap: ["Dart Basics", "Flutter Widgets", "State Management", "App Deployment"] },
+  "graphql": { career: ["Backend Developer", "Full-Stack Developer"], roadmap: ["GraphQL Basics", "Queries & Mutations", "Server Integration", "Security & Optimization"] },
+  "html": { career: ["Frontend Developer", "Web Designer"], roadmap: ["HTML Basics", "Semantic HTML", "Forms & Accessibility", "Projects"] },
+  "internet_of_things": { career: ["IoT Engineer", "Embedded Developer"], roadmap: ["Sensors & Actuators", "Microcontrollers", "IoT Protocols", "IoT Projects"] },
+  "java": { career: ["Backend Developer", "Enterprise Developer"], roadmap: ["OOP & Java Basics", "Spring Boot", "Databases", "Deploy APIs"] },
+  "kotlin": { career: ["Android Developer", "Mobile App Developer"], roadmap: ["Kotlin Basics", "Android SDK", "Jetpack Components", "App Deployment"] },
+  "laravel": { career: ["PHP Developer", "Full-Stack Developer"], roadmap: ["PHP Basics", "MVC Pattern", "Laravel Framework", "Build Projects"] },
+  "machine_learning": { career: ["ML Engineer", "Data Scientist"], roadmap: ["Python Basics", "ML Algorithms", "TensorFlow/PyTorch", "Deploy Models"] },
+  "nodejs": { career: ["Backend Developer", "Full-Stack Developer"], roadmap: ["JavaScript Basics", "Node.js Frameworks", "APIs", "Database Integration"] },
+  "opencv": { career: ["Computer Vision Engineer", "AI Developer"], roadmap: ["Python Basics", "Image Processing", "Object Detection", "Deep Learning"] },
+  "python": { career: ["Data Scientist", "AI/ML Engineer", "Backend Developer"], roadmap: ["Python Basics", "Flask/Django", "Pandas/Numpy", "ML Libraries"] },
+  "quantum_computing": { career: ["Quantum Researcher", "Quantum Software Developer"], roadmap: ["Quantum Mechanics Basics", "Qiskit", "Quantum Algorithms", "Simulation & Projects"] },
+  "react": { career: ["Frontend Developer", "Full-Stack Developer"], roadmap: ["JSX Basics", "Hooks", "Redux", "Build Projects"] },
+  "sql": { career: ["Database Administrator", "Backend Engineer"], roadmap: ["SQL Basics", "Joins & Queries", "Optimization", "Stored Procedures"] },
+  "typescript": { career: ["Frontend Developer", "Full-Stack Developer"], roadmap: ["JavaScript Basics", "TypeScript Types", "Framework Integration", "Build Projects"] },
+  "uiux": { career: ["UI/UX Designer", "Product Designer"], roadmap: ["Design Principles", "Figma/Adobe XD", "Prototyping", "Portfolio Projects"] },
+  "vuejs": { career: ["Frontend Developer", "Full-Stack Developer"], roadmap: ["Vue Basics", "Components & Directives", "Vuex/Router", "Build Projects"] },
+  "web3": { career: ["Blockchain Developer", "DApp Developer"], roadmap: ["Ethereum Basics", "Smart Contracts", "Web3.js", "Build DApps"] },
+  "xamarin": { career: ["Mobile Developer", "Cross-Platform Developer"], roadmap: ["C# Basics", "Xamarin.Forms", "UI & Navigation", "Deploy Apps"] },
+  "yaml": { career: ["DevOps Engineer", "Backend Developer"], roadmap: ["YAML Syntax", "CI/CD Configurations", "Kubernetes Config", "Automation Projects"] },
+  "zend": { career: ["PHP Developer", "Backend Developer"], roadmap: ["PHP Basics", "Zend Framework", "MVC Architecture", "Build Projects"] }
+};
+
+
+    // Autocomplete suggestions
+    function showSuggestions() {
+      const input = document.getElementById("skillInput").value.toLowerCase();
+      const suggestionBox = document.getElementById("suggestions");
+      suggestionBox.innerHTML = "";
+      if (!input) {
+        suggestionBox.classList.add("hidden");
+        return;
+      }
+      const matches = Object.keys(skillData).filter(skill => skill.includes(input));
+      if (matches.length === 0) {
+        suggestionBox.classList.add("hidden");
+        return;
+      }
+      matches.forEach(skill => {
+        const div = document.createElement("div");
+        div.textContent = skill.charAt(0).toUpperCase() + skill.slice(1);
+        div.onclick = () => {
+          document.getElementById("skillInput").value = skill;
+          suggestionBox.classList.add("hidden");
+        };
+        suggestionBox.appendChild(div);
+      });
+      suggestionBox.classList.remove("hidden");
+    }
+
+    // Provide guidance
+    function provideGuidance() {
+      const input = document.getElementById("skillInput").value.toLowerCase().trim();
+      const careerSection = document.getElementById("careerSection");
+      const roadmapSection = document.getElementById("roadmapSection");
+      const chatSection = document.getElementById("chatSection");
+      const careerList = document.getElementById("careerPaths");
+      const roadmapList = document.getElementById("learningRoadmap");
+
+      if (skillData[input]) {
+        careerList.innerHTML = "";
+        roadmapList.innerHTML = "";
+        skillData[input].career.forEach(c => {
+          let li = document.createElement("li");
+          li.textContent = c;
+          careerList.appendChild(li);
+        });
+        skillData[input].roadmap.forEach(r => {
+          let li = document.createElement("li");
+          li.textContent = r;
+          roadmapList.appendChild(li);
+        });
+        careerSection.classList.remove("hidden");
+        roadmapSection.classList.remove("hidden");
+        chatSection.classList.remove("hidden");
+      } else {
+        alert("❌ Skill not found. Try typing skills like AI, Blockchain, Cybersecurity, Python, Java, React, SQL...");
+      }
+    }
+
+    // Simple chatbot simulation
+    function sendMessage() {
+      const chatInput = document.getElementById("chatInput");
+      const chatbox = document.getElementById("chatbox");
+      const userMsg = chatInput.value.trim();
+      if (!userMsg) return;
+
+      // Show user message
+      const userDiv = document.createElement("div");
+      userDiv.classList.add("message", "user");
+      userDiv.textContent = userMsg;
+      chatbox.appendChild(userDiv);
+
+      // Auto bot response (demo logic)
+      const botDiv = document.createElement("div");
+      botDiv.classList.add("message", "bot");
+      botDiv.textContent = "🤖 AI Advisor: That's a great question! Focus on building projects to strengthen this skill.";
+      chatbox.appendChild(botDiv);
+
+      chatInput.value = "";
+      chatbox.scrollTop = chatbox.scrollHeight;
+    }
+  </script>
+</body>
+</html>
