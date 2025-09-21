@@ -1,12 +1,17 @@
 career-skill-advisor/
  
-── index.html          # Main landing page
+── index.html   # Main landing page
+
 ── style.css           # Styling & animations
+
 ── script.js           # JavaScript interactivity
 
 ── assets/
+
    ── images/         # Backgrounds, logos, icons
       ── bg.jpg
+
+      
    ── videos/         # Hover & click videos
       ── 1.1.mp4
       ── 1.2.mp4
